@@ -1,3 +1,4 @@
+#Installing the needed packages
 install.packages('readr')
 install.packages('ggplot2')
 install.packages('mlbench')
@@ -18,24 +19,32 @@ library(reshape2)
 library(caret)
 library(caTools)
 library(dplyr)
+#Input the dataset
 data(Housing)
 housing <- Housing
 str(housing)
+#Examine the head of the dataframe
 head(housing)
 summary(housing)
+#Data Cleaning
+#check for missing values in the dataset
 missmap(housing,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
-corrplot(cor(select(housing,-chas)))
 
+#Expolartory Data Analysis - using ggplot2 and corrplot
+#Correlation
+corrplot(cor(select(housing,-chas)))
+#medv Desnsity plot using ggplot2
 #visualizing the distribution of the target variable 
 housing %>% 
   ggplot(aes(medv)) +
   stat_density() + 
   theme_bw()
-
+#medv density using ploty
 ggplotly(housing %>% 
            ggplot(aes(medv)) +
            stat_density() + 
            theme_bw())
+#using medv
 housing %>%
   select(c(crim, rm, age, rad, tax, lstat, medv,indus,nox,ptratio,zn)) %>%
   melt(id.vars = "medv") %>%
@@ -46,18 +55,14 @@ housing %>%
   labs(x = "Variable Value", y = "Median House Price ($1000s)") +
   theme_minimal()
 
-#train and test data
+#Model Building and Prediction
+#Train and Test Data
 #set a seed 
 set.seed(123)
-
-#Split the data , `split()` assigns a booleans to a new column based on the SplitRatio specified. 
-
+#Split the data , `split()` assigns a booleans to a new column based on the SplitRatio specified.
 split <- sample.split(housing,SplitRatio =0.75)
-
-
 train <- subset(housing,split==TRUE)
 test <- subset(housing,split==FALSE)
-
 # train <- select(train,-b)
 # test <- select(test,-b)
 
