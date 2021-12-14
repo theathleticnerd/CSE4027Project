@@ -22,13 +22,6 @@ library(dplyr)
 #Input the dataset
 data(Housing)
 housing <- Housing
-str(housing)
-#Examine the head of the dataframe
-head(housing)
-summary(housing)
-#Data Cleaning
-#check for missing values in the dataset
-missmap(housing,col=c('yellow','black'),y.at=1,y.labels='',legend=TRUE)
 
 #Expolartory Data Analysis - using ggplot2 and corrplot
 #Correlation
