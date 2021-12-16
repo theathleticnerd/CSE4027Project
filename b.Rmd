@@ -1,0 +1,128 @@
+---
+title: "CSE4027 - House Pricing"
+output:
+  html_notebook: default
+  pdf_document: default
+  word_document: default
+---
+
+
+# Linear Regression
+This is a House Price Prediction Using Linear Regression  Model
+
+At first we install all the required packages for the linear regression.
+```{r}
+install.packages('readr')
+install.packages('ggplot2')
+install.packages('mlbench')
+install.packages('corrplot')
+install.packages('Amelia')
+install.packages('caret')
+install.packages('plotly')
+install.packages('caTools')
+install.packages('reshape2')
+install.packages('dplyr')
+library(readr)
+library(ggplot2)
+library(corrplot)
+library(mlbench)
+library(Amelia)
+library(plotly)
+library(reshape2)
+library(caret)
+library(caTools)
+library(dplyr)
+
+```
+
+We input the cleaned dataset
+```{r}
+data(Housing)
+housing <- Housing
+```
+
+## Exploratory Data Analysis
+### Visualizations
+
+#### Correlation
+
+```{r}
+corrplot(cor(select(housing,-chas)))
+```
+
+#### Density Plot using ggplot2
+```{r}
+housing %>% 
+  ggplot(aes(medv)) +
+  stat_density() + 
+  theme_bw()
+```
+
+#### Density Plot using plotly
+```{r}
+ggplotly(housing %>% 
+  ggplot(aes(medv)) +
+  stat_density() + 
+  theme_bw())
+```
+
+#### medv
+```{r}
+housing %>%
+  select(c(crim, rm, age, rad, tax, lstat, medv,indus,nox,ptratio,zn)) %>%
+  melt(id.vars = "medv") %>%
+  ggplot(aes(x = value, y = medv, colour = variable)) +
+  geom_point(alpha = 0.7) +
+  stat_smooth(aes(colour = "black")) +
+  facet_wrap(~variable, scales = "free", ncol = 2) +
+  labs(x = "Variable Value", y = "Median House Price ($1000s)") +
+  theme_minimal()
+```
+
+
+## Model Building & Prediction
+### Train and Test Data
+```{r}
+set.seed(123)
+split <- sample.split(housing,SplitRatio =0.75)
+train <- subset(housing,split==TRUE)
+test <- subset(housing,split==FALSE)
+```
+
+### Training The Model
+```{r}
+model <- lm(medv ~ crim + rm + tax + lstat , data = train)
+summary(model)
+```
+### Visualizing The Model
+```{r}
+res <- residuals(model)
+res <- as.data.frame(res)
+ggplot(res,aes(res)) +  geom_histogram(fill='blue',alpha=0.5)
+```
+
+```{r}
+plot(model)
+```
+
+
+### Predictions
+```{r}
+test$predicted.medv <- predict(model,test)
+
+pl1 <-test %>% 
+  ggplot(aes(medv,predicted.medv)) +
+  geom_point(alpha=0.5) + 
+  stat_smooth(aes(colour='black')) +
+  xlab('Actual value of medv') +
+  ylab('Predicted value of medv')+
+  theme_bw()
+
+ggplotly(pl1)
+```
+
+### Assessing our Model
+```{r}
+error <- test$medv-test$predicted.medv
+rmse <- sqrt(mean(error)^2)
+```
