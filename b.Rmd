@@ -1,9 +1,9 @@
 ---
 title: "CSE4027 - House Pricing"
 output:
-  html_notebook: default
-  pdf_document: default
   word_document: default
+  pdf_document: default
+  html_notebook: default
 ---
 
 
@@ -12,16 +12,16 @@ This is a House Price Prediction Using Linear Regression  Model
 
 At first we install all the required packages for the linear regression.
 ```{r}
-install.packages('readr')
-install.packages('ggplot2')
-install.packages('mlbench')
-install.packages('corrplot')
-install.packages('Amelia')
-install.packages('caret')
-install.packages('plotly')
-install.packages('caTools')
-install.packages('reshape2')
-install.packages('dplyr')
+# install.packages('readr', repos = "http://cran.us.r-project.org")
+# install.packages('ggplot2', repos = "http://cran.us.r-project.org")
+# install.packages('mlbench', repos = "http://cran.us.r-project.org")
+# install.packages('corrplot', repos = "http://cran.us.r-project.org")
+# install.packages('Amelia', repos = "http://cran.us.r-project.org")
+# install.packages('caret', repos = "http://cran.us.r-project.org")
+# install.packages('plotly', repos = "http://cran.us.r-project.org")
+# install.packages('caTools', repos = "http://cran.us.r-project.org")
+# install.packages('reshape2', repos = "http://cran.us.r-project.org")
+# install.packages('dplyr', repos = "http://cran.us.r-project.org")
 library(readr)
 library(ggplot2)
 library(corrplot)
@@ -47,7 +47,7 @@ housing <- Housing
 #### Correlation
 
 ```{r}
-corrplot(cor(select(housing,-chas)))
+corrplot(cor(select(housing,-chas))) 
 ```
 
 #### Density Plot using ggplot2
@@ -91,7 +91,7 @@ test <- subset(housing,split==FALSE)
 
 ### Training The Model
 ```{r}
-model <- lm(medv ~ crim + rm + tax + lstat , data = train)
+model <- lm(medv ~ crim + rm + tax + age + nox + lstat , data = train)
 summary(model)
 ```
 ### Visualizing The Model
